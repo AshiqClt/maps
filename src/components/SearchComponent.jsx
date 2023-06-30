@@ -20,26 +20,21 @@ const SearchComponent = ({
   const [searchResults, setSearchResults] = useState([]);
   const [populationData, setPopulationData] = useState(null);
   const [loading, setLoading] = useState(false);
-  // const [recentSearches, setRecentSearches] = useState([]);
+  const [searchTextToUpdate, setSearchTextToUpdate] = useState("");
   const [recentSearches, setRecentSearches] = useState(() => {
     const savedSearches = localStorage.getItem("recentSearches");
     return savedSearches ? JSON.parse(savedSearches) : [];
   });
 
-  useEffect(() => {
-    localStorage.setItem("recentSearches", JSON.stringify(recentSearches));
-  }, [recentSearches]);
-
-  const handleSearch = async () => {
+  const handleSearch = async (text) => {
     try {
       setLoading(true);
-      const response = await getPlaces(searchText);
+      const response = await getPlaces(text);
       setLoading(false);
       const filteredResults = response.filter(
         (result) => result.type === "administrative"
       );
       setSearchResults(filteredResults);
-      saveToLocalStorage(searchText);
       if (!recentSearches.includes(searchText))
         setRecentSearches([searchText, ...recentSearches]);
     } catch (error) {
@@ -48,6 +43,22 @@ const SearchComponent = ({
     }
   };
 
+  // const handleSearchFromRecents = async (text) => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await getPlaces(text);
+  //     setLoading(false);
+  //     const filteredResults = response.filter(
+  //       (result) => result.type === "administrative"
+  //     );
+  //     setSearchResults(filteredResults);
+  //     if (!recentSearches.includes(searchText))
+  //       setRecentSearches([searchText, ...recentSearches]);
+  //   } catch (error) {
+  //     setLoading(false);
+  //     console.error("Error:", error);
+  //   }
+  // };
 
   const handleLocationSelect = (location) => {
     setSelectedLocation(location);
@@ -71,7 +82,7 @@ const SearchComponent = ({
         placeholder="Search locations..."
         sx={{ width: "100%", marginBottom: "10px", marginTop: "5px" }}
       />
-      <Button variant="contained" onClick={handleSearch}>
+      <Button variant="contained" onClick={()=> handleSearch(searchText)}>
         Search
       </Button>
       {selectedLocation && (
@@ -109,21 +120,16 @@ const SearchComponent = ({
         )}
       </div>
       <div>
-      <Typography variant="h5">Recent searches</Typography>
-      <List>
-            {recentSearches.map((result) => (
-              <ListItem key={result}>
-                <Button onClick={() => {
-                  console.log(searchText)
-                  setSearchText(result);
-                  console.log(searchText)
-                  handleSearch();
-                }}>
-                  <ListItemText primary={result} />
-                </Button>
-              </ListItem>
-            ))}
-          </List>
+        <Typography variant="h5">Recent searches</Typography>
+        <List>
+          {recentSearches.map((result) => (
+            <ListItem key={result}>
+              <Button onClick={()=>handleSearch(result)}>
+                <ListItemText primary={result} />
+              </Button>
+            </ListItem>
+          ))}
+        </List>
       </div>
     </div>
   );
