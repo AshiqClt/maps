@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import {
   TextField,
   Button,
@@ -8,6 +7,8 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
+
+import { getPlaces } from "../services/API";
 
 const SearchComponent = ({
   selectedLocation,
@@ -20,10 +21,8 @@ const SearchComponent = ({
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(
-        `https://nominatim.openstreetmap.org/search?format=json&extratags=1&addressdetails=1&limit=8&q=${searchText}`
-      );
-      const filteredResults = response.data.filter(
+      const response = await getPlaces(searchText);
+      const filteredResults = response.filter(
         (result) => result.type === "administrative"
       );
       setSearchResults(filteredResults);
@@ -60,13 +59,13 @@ const SearchComponent = ({
       {selectedLocation && (
         <div style={{ marginTop: "15px" }}>
           <Typography variant="h5">Population Information</Typography>
-          {populationData.population || populationData.year ? (
+          {populationData.population ? (
             <>
               <Typography>Population: {populationData.population}</Typography>
-              <Typography>Year: {populationData.year}</Typography>
+              <Typography>Year: {populationData.year ? populationData.year : "Data not available"}</Typography>
             </>
           ) : (
-            <Typography>No population data available.</Typography>
+            <Typography>Population data not available.</Typography>
           )}
         </div>
       )}
