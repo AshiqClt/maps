@@ -20,7 +20,6 @@ const SearchComponent = ({
   const [searchResults, setSearchResults] = useState([]);
   const [populationData, setPopulationData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [searchTextToUpdate, setSearchTextToUpdate] = useState("");
   const [recentSearches, setRecentSearches] = useState(() => {
     const savedSearches = localStorage.getItem("recentSearches");
     return savedSearches ? JSON.parse(savedSearches) : [];
@@ -35,7 +34,7 @@ const SearchComponent = ({
         (result) => result.type === "administrative"
       );
       setSearchResults(filteredResults);
-      if (!recentSearches.includes(searchText))
+      if (!recentSearches.includes(searchText) && searchText)
         setRecentSearches([searchText, ...recentSearches]);
     } catch (error) {
       setLoading(false);
@@ -43,22 +42,9 @@ const SearchComponent = ({
     }
   };
 
-  // const handleSearchFromRecents = async (text) => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await getPlaces(text);
-  //     setLoading(false);
-  //     const filteredResults = response.filter(
-  //       (result) => result.type === "administrative"
-  //     );
-  //     setSearchResults(filteredResults);
-  //     if (!recentSearches.includes(searchText))
-  //       setRecentSearches([searchText, ...recentSearches]);
-  //   } catch (error) {
-  //     setLoading(false);
-  //     console.error("Error:", error);
-  //   }
-  // };
+  useEffect(() => {
+    localStorage.setItem("recentSearches", JSON.stringify(recentSearches));
+  }, [recentSearches]);
 
   const handleLocationSelect = (location) => {
     setSelectedLocation(location);
@@ -82,7 +68,7 @@ const SearchComponent = ({
         placeholder="Search locations..."
         sx={{ width: "100%", marginBottom: "10px", marginTop: "5px" }}
       />
-      <Button variant="contained" onClick={()=> handleSearch(searchText)}>
+      <Button variant="contained" onClick={() => handleSearch(searchText)}>
         Search
       </Button>
       {selectedLocation && (
@@ -124,7 +110,7 @@ const SearchComponent = ({
         <List>
           {recentSearches.map((result) => (
             <ListItem key={result}>
-              <Button onClick={()=>handleSearch(result)}>
+              <Button onClick={() => handleSearch(result)}>
                 <ListItemText primary={result} />
               </Button>
             </ListItem>
