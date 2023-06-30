@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -20,6 +20,15 @@ const SearchComponent = ({
   const [searchResults, setSearchResults] = useState([]);
   const [populationData, setPopulationData] = useState(null);
   const [loading, setLoading] = useState(false);
+  // const [recentSearches, setRecentSearches] = useState([]);
+  const [recentSearches, setRecentSearches] = useState(() => {
+    const savedSearches = localStorage.getItem("recentSearches");
+    return savedSearches ? JSON.parse(savedSearches) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("recentSearches", JSON.stringify(recentSearches));
+  }, [recentSearches]);
 
   const handleSearch = async () => {
     try {
@@ -30,11 +39,15 @@ const SearchComponent = ({
         (result) => result.type === "administrative"
       );
       setSearchResults(filteredResults);
+      saveToLocalStorage(searchText);
+      if (!recentSearches.includes(searchText))
+        setRecentSearches([searchText, ...recentSearches]);
     } catch (error) {
       setLoading(false);
       console.error("Error:", error);
     }
   };
+
 
   const handleLocationSelect = (location) => {
     setSelectedLocation(location);
@@ -94,6 +107,23 @@ const SearchComponent = ({
             ))}
           </List>
         )}
+      </div>
+      <div>
+      <Typography variant="h5">Recent searches</Typography>
+      <List>
+            {recentSearches.map((result) => (
+              <ListItem key={result}>
+                <Button onClick={() => {
+                  console.log(searchText)
+                  setSearchText(result);
+                  console.log(searchText)
+                  handleSearch();
+                }}>
+                  <ListItemText primary={result} />
+                </Button>
+              </ListItem>
+            ))}
+          </List>
       </div>
     </div>
   );
