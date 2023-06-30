@@ -9,12 +9,13 @@ import {
   ListItemText,
 } from "@mui/material";
 
-const SearchComponent = () => {
+const SearchComponent = ({
+  selectedLocation,
+  setSelectedLocation,
+  setSelectedLocationCoordinates,
+}) => {
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState(null);
-  const [selectedLocationCoordinates, setSelectedLocationCoordinates] =
-    useState([42.3601, -71.0589]);
   const [populationData, setPopulationData] = useState(null);
 
   const handleSearch = async () => {
