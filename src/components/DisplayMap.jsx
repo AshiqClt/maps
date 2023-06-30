@@ -16,11 +16,9 @@ const DisplayMap = ({ selectedLocation, selectedLocationCoordinates }) => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {selectedLocation && (
-          <Marker position={selectedLocationCoordinates}>
-            <Popup>{selectedLocation.display_name}</Popup>
-          </Marker>
-        )}
+        <Marker position={selectedLocationCoordinates}>
+          <Popup>{selectedLocation?.display_name}</Popup>
+        </Marker>
       </MapContainer>
     </div>
   );
