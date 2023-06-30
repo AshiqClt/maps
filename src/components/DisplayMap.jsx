@@ -2,10 +2,8 @@ import React from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-const DisplayMap = ({
-  selectedLocation,
-  selectedLocationCoordinates,
-}) => {
+const DisplayMap = ({ selectedLocation, selectedLocationCoordinates }) => {
+  console.log(selectedLocationCoordinates);
   return (
     <div style={{ width: "80%" }}>
       <MapContainer

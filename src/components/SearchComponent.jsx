@@ -7,6 +7,7 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import { getPlaces } from "../services/API";
 
@@ -18,15 +19,19 @@ const SearchComponent = ({
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [populationData, setPopulationData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSearch = async () => {
     try {
+      setLoading(true);
       const response = await getPlaces(searchText);
+      setLoading(false);
       const filteredResults = response.filter(
         (result) => result.type === "administrative"
       );
       setSearchResults(filteredResults);
     } catch (error) {
+      setLoading(false);
       console.error("Error:", error);
     }
   };
@@ -62,7 +67,12 @@ const SearchComponent = ({
           {populationData.population ? (
             <>
               <Typography>Population: {populationData.population}</Typography>
-              <Typography>Year: {populationData.year ? populationData.year : "Data not available"}</Typography>
+              <Typography>
+                Year:{" "}
+                {populationData.year
+                  ? populationData.year
+                  : "Data not available"}
+              </Typography>
             </>
           ) : (
             <Typography>Population data not available.</Typography>
@@ -71,15 +81,19 @@ const SearchComponent = ({
       )}
       <div style={{ marginTop: "15px" }}>
         <Typography variant="h5">Search Results</Typography>
-        <List>
-          {searchResults.map((result) => (
-            <ListItem key={result.place_id}>
-              <Button onClick={() => handleLocationSelect(result)}>
-                <ListItemText primary={result.display_name} />
-              </Button>
-            </ListItem>
-          ))}
-        </List>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <List>
+            {searchResults.map((result) => (
+              <ListItem key={result.place_id}>
+                <Button onClick={() => handleLocationSelect(result)}>
+                  <ListItemText primary={result.display_name} />
+                </Button>
+              </ListItem>
+            ))}
+          </List>
+        )}
       </div>
     </div>
   );
