@@ -7,16 +7,19 @@ const Home = () => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedLocationCoordinates, setSelectedLocationCoordinates] =
     useState(bostonCoordinates);
+  const [boundaries, setBoundaries] = useState([]);
   return (
     <div style={{ width: "100vw", display: "flex" }}>
       <SearchComponent
         selectedLocation={selectedLocation}
         setSelectedLocation={setSelectedLocation}
         setSelectedLocationCoordinates={setSelectedLocationCoordinates}
+        setBoundaries={setBoundaries}
       />
       <DisplayMap
         selectedLocation={selectedLocation}
         selectedLocationCoordinates={selectedLocationCoordinates}
+        boundaries={boundaries}
       />
     </div>
   );

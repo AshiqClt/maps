@@ -15,6 +15,7 @@ const SearchComponent = ({
   selectedLocation,
   setSelectedLocation,
   setSelectedLocationCoordinates,
+  setBoundaries,
 }) => {
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -56,6 +57,7 @@ const SearchComponent = ({
       population: location?.extratags?.population,
       year: location?.extratags["population:date"],
     });
+    setBoundaries(location.geojson.coordinates);
   };
 
   return (
